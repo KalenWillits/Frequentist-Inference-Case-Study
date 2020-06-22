@@ -168,7 +168,7 @@ _ = plt.hist(pop_heights, bins=30)
 _ = plt.xlabel('height (cm)')
 _ = plt.ylabel('number of people')
 _ = plt.title('Distribution of heights in entire town population')
-_ = plt.axvline(172, color='r')
+_ = plt.axvline(172, color='cyan')
 _ = plt.axvline(172+5, color='r', linestyle='--')
 _ = plt.axvline(172-5, color='r', linestyle='--')
 _ = plt.axvline(172+10, color='r', linestyle='-.')
@@ -201,23 +201,39 @@ np.mean(daily_sample2)
 # %% markdown
 # __Q8:__ Simulate performing this random trial every day for a year, calculating the mean of each daily sample of 10, and plot the resultant sampling distribution of the mean.
 # %% markdown
-# __A:__
+# __A:__ See plot below.
 # %% codecell
+samples10 = []
+
 
 # %% codecell
 seed(47)
 # take your samples here
+for sample in range(365):
+    samples10.append(np.mean(townsfolk_sampler(10)))
+# %% codecells
 
-# %% codecell
+plt.hist(samples10)
+plt.xlabel('Mean Heights in cm')
+plt.ylabel('Number of Observations')
+plt.title('Mean Town Heights')
+
+
+
 
 # %% markdown
 # The above is the distribution of the means of samples of size 10 taken from our population. The Central Limit Theorem tells us the expected mean of this distribution will be equal to the population mean, and standard deviation will be $\sigma / \sqrt n$, which, in this case, should be approximately 1.58.
 # %% markdown
 # __Q9:__ Verify the above results from the CLT.
 # %% markdown
-# __A:__
+# __A:__ The central limit theorem is a bit off, perhaps we need to gather more samples. See the plot below.
 # %% codecell
-
+plt.hist(samples10)
+plt.axvline(172, color='cyan', label='Expected Average')
+plt.xlabel('Mean Heights in cm')
+plt.ylabel('Number of Observations')
+plt.title('Mean Town Heights (SAMPLE SIZE 10)')
+plt.legend()
 # %% codecell
 
 # %% markdown
@@ -225,13 +241,20 @@ seed(47)
 # %% markdown
 # __Q10:__ Repeat the above year's worth of samples but for a sample size of 50 (perhaps you had a bigger budget for conducting surveys that year)! Would you expect your distribution of sample means to be wider (more variable) or narrower (more consistent)? Compare your resultant summary statistics to those predicted by the CLT.
 # %% markdown
-# __A:__
+# __A:__ See plot below.
 # %% codecell
 seed(47)
 # calculate daily means from the larger sample size here
-
+samples50 = []
+for sample in range(365):
+    samples50.append(np.mean(townsfolk_sampler(50)))
 # %% codecell
-
+plt.hist(samples50)
+plt.axvline(172, color='cyan', label='Expected Average')
+plt.xlabel('Mean Heights in cm')
+plt.ylabel('Number of Observations')
+plt.title('Mean Town Heights (SAMPLE SIZE 50)')
+plt.legend()
 # %% markdown
 # What we've seen so far, then, is that we can estimate population parameters from a sample from the population, and that samples have their own distributions. Furthermore, the larger the sample size, the narrower are those sampling distributions.
 # %% markdown
