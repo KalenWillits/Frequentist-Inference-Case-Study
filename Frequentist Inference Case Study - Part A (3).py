@@ -241,9 +241,11 @@ plt.legend()
 # %% markdown
 # __Q10:__ Repeat the above year's worth of samples but for a sample size of 50 (perhaps you had a bigger budget for conducting surveys that year)! Would you expect your distribution of sample means to be wider (more variable) or narrower (more consistent)? Compare your resultant summary statistics to those predicted by the CLT.
 # %% markdown
-# __A:__ See plot below.
+# __A:__ See plot below. The P-Value for 177 or lower is 0.003059444665678314.
 # %% codecell
 seed(47)
+
+# %% codecell
 # calculate daily means from the larger sample size here
 samples50 = []
 for sample in range(365):
@@ -255,6 +257,11 @@ plt.xlabel('Mean Heights in cm')
 plt.ylabel('Number of Observations')
 plt.title('Mean Town Heights (SAMPLE SIZE 50)')
 plt.legend()
+
+
+norm.ppf(0.95, 177, 1)
+print('The P value for an occurence of 177 cm is ' + str((max(norm.cdf(samples50, 177, 1)))))
+
 # %% markdown
 # What we've seen so far, then, is that we can estimate population parameters from a sample from the population, and that samples have their own distributions. Furthermore, the larger the sample size, the narrower are those sampling distributions.
 # %% markdown
@@ -268,26 +275,53 @@ plt.legend()
 #
 # __Q11:__ Using this fact, calculate the probability of observing the value 1 or less in a single observation from the standard normal distribution. Hint: you may find it helpful to sketch the standard normal distribution (the familiar bell shape) and mark the number of standard deviations from the mean on the x-axis and shade the regions of the curve that contain certain percentages of the population.
 # %% markdown
-# __A:__
+# __A:__ 0.49800000000000005 to 0.5 as per the empirical rule.
 # %% markdown
 # Calculating this probability involved calculating the area under the curve from the value of 1 and below. To put it in mathematical terms, we need to *integrate* the probability density function. We could just add together the known areas of chunks (from -Inf to 0 and then 0 to $+\sigma$ in the example above). One way to do this is to look up tables (literally). Fortunately, scipy has this functionality built in with the cdf() function.
 # %% markdown
 # __Q12:__ Use the cdf() function to answer the question above again and verify you get the same answer.
 # %% markdown
-# __A:__
+# __A:__ 0.5
 # %% codecell
-
+norm.cdf(0,0,1) #Answer to Q12
 # %% markdown
 # __Q13:__ Using our knowledge of the population parameters for our townsfolks' heights, what is the probability of selecting one person at random and their height being 177 cm or less? Calculate this using both of the approaches given above.
 # %% markdown
-# __A:__
+# __A:__ The probability of finding a person that is 177 cm or less is 0.8407006739925729
 # %% codecell
 
+townsfolk = townsfolk_sampler(99999)
+
+#plt.plot(cdf)
+def ecdf(data):
+    """Compute ECDF for a one-dimensional array of measurements."""
+    # Number of data points: n
+    n = len(data)
+
+    # x-data for the ECDF: x
+    x = np.sort(data)
+
+    # y-data for the ECDF: y
+    y = np.arange(1, n + 1) / n
+
+    return x, y
+
+df = pd.DataFrame(townsfolk)
+df.describe()
+A = norm(np.mean(townsfolk), np.std(townsfolk)).cdf(177)
+
+print(A)
 # %% markdown
 # __Q14:__ Turning this question around — suppose we randomly pick one person and measure their height and find they are 2.00 m tall. How surprised should we be at this result, given what we know about the population distribution? In other words, how likely would it be to obtain a value at least as extreme as this? Express this as a probability.
 # %% markdown
-# __A:__
+# __A:__The chance of finding a person from this population that is 1.0065136279990838e-08 %
+
+
+
 # %% codecell
+
+two_meters = 200 # 2m = 200cm
+print(1- norm(np.mean(townsfolk), np.std(townsfolk)).cdf(two_meters))
 
 # %% markdown
 # What we've just done is calculate the ***p-value*** of the observation of someone 2.00m tall (review *p*-values if you need to on p. 399 of *AoS*). We could calculate this probability by virtue of knowing the population parameters. We were then able to use the known properties of the relevant normal distribution to calculate the probability of observing a value at least as extreme as our test value.
@@ -312,19 +346,28 @@ plt.legend()
 # %% codecell
 seed(47)
 # take your sample now
-
+sample = townsfolk_sampler(50)
 # %% codecell
-
+mean = np.mean(sample)
 # %% codecell
-
+std = np.std(sample)
 # %% codecell
-
+moe = norm.ppf(0.95)
 # %% codecell
+import scipy
+def mean_confidence_interval(data, confidence=0.95):
+    a = 1.0 * np.array(data)
+    n = len(a)
+    m, se = np.mean(a), scipy.stats.sem(a)
+    h = se * scipy.stats.t.ppf((1 + confidence) / 2., n-1)
+    return m, m-h, m+h
 
+mean_confidence_interval(sample)
 # %% markdown
+# This does include the population mean!
 # __Q16:__ Above, we calculated the confidence interval using the critical z value. What is the problem with this? What requirement, or requirements, are we (strictly) failing?
 # %% markdown
-# __A:__
+# __A:__ We are not using enough data to gain insight from this output. This distrubution does not yet matching a normal distrobution. 
 # %% markdown
 # __Q17:__ Calculate the 95% confidence interval for the mean using the _t_ distribution. Is this wider or narrower than that based on the normal distribution above? If you're unsure, you may find this [resource](https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/confidence-interval/) useful. For calculating the critical value, remember how you could calculate this for the normal distribution using norm.ppf().
 # %% markdown
