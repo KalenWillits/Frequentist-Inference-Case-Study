@@ -258,7 +258,6 @@ plt.ylabel('Number of Observations')
 plt.title('Mean Town Heights (SAMPLE SIZE 50)')
 plt.legend()
 
-
 norm.ppf(0.95, 177, 1)
 print('The P value for an occurence of 177 cm is ' + str((max(norm.cdf(samples50, 177, 1)))))
 
@@ -342,42 +341,51 @@ print(1- norm(np.mean(townsfolk), np.std(townsfolk)).cdf(two_meters))
 # * Calculate the 95% Confidence Interval of the mean (***confidence intervals*** are defined on p. 385 of *AoS*)
 # * Does this interval include the true population mean?
 # %% markdown
-# __A:__
+# __A:__ - See below
 # %% codecell
 seed(47)
 # take your sample now
 sample = townsfolk_sampler(50)
 # %% codecell
-mean = np.mean(sample)
+np.mean(sample)
 # %% codecell
-std = np.std(sample)
+np.std(sample)
 # %% codecell
-moe = norm.ppf(0.95)
+norm.ppf(0.95)
 # %% codecell
 import scipy
 def mean_confidence_interval(data, confidence=0.95):
     a = 1.0 * np.array(data)
     n = len(a)
     m, se = np.mean(a), scipy.stats.sem(a)
-    h = se * scipy.stats.t.ppf((1 + confidence) / 2., n-1)
+    h = se * norm.ppf((1 + confidence) / 2., n-1)
     return m, m-h, m+h
 
 mean_confidence_interval(sample)
 # %% markdown
-# This does include the population mean!
+# This does not include the population mean, however it is close.
 # __Q16:__ Above, we calculated the confidence interval using the critical z value. What is the problem with this? What requirement, or requirements, are we (strictly) failing?
 # %% markdown
-# __A:__ We are not using enough data to gain insight from this output. This distrubution does not yet matching a normal distrobution. 
+# __A:__ We are not using enough data to gain insight from this output. This distrubution does not yet matching a normal distrobution.
 # %% markdown
 # __Q17:__ Calculate the 95% confidence interval for the mean using the _t_ distribution. Is this wider or narrower than that based on the normal distribution above? If you're unsure, you may find this [resource](https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/confidence-interval/) useful. For calculating the critical value, remember how you could calculate this for the normal distribution using norm.ppf().
 # %% markdown
 # __A:__
 # %% codecell
+np.mean(sample)
 
 # %% codecell
+np.std(sample)
 
 # %% codecell
+def mean_confidence_interval_t(data, confidence=0.95):
+    a = 1.0 * np.array(data)
+    n = len(a)
+    m, se = np.mean(a), scipy.stats.sem(a)
+    h = se * t.ppf((1 + confidence) / 2., n-1)
+    return m, m-h, m+h
 
+mean_confidence_interval_t(sample)
 # %% markdown
 # This is slightly wider than the previous confidence interval. This reflects the greater uncertainty given that we are estimating population parameters from a sample.
 # %% markdown
