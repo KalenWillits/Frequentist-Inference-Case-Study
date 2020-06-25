@@ -366,7 +366,7 @@ mean_confidence_interval(sample)
 # This does not include the population mean, however it is close.
 # __Q16:__ Above, we calculated the confidence interval using the critical z value. What is the problem with this? What requirement, or requirements, are we (strictly) failing?
 # %% markdown
-# __A:__ We are not using enough data to gain insight from this output. This distrubution does not yet matching a normal distrobution.
+# __A:__ We are not using enough data to gain insight from this output. This distribution does not yet matching a normal distribution.
 # %% markdown
 # __Q17:__ Calculate the 95% confidence interval for the mean using the _t_ distribution. Is this wider or narrower than that based on the normal distribution above? If you're unsure, you may find this [resource](https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/confidence-interval/) useful. For calculating the critical value, remember how you could calculate this for the normal distribution using norm.ppf().
 # %% markdown
