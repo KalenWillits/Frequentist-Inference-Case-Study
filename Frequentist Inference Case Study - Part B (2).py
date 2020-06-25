@@ -97,26 +97,72 @@ mci = mean_confidence_interval(medical['charges'])
 # (If you need some reminding of the general definition of ***t-statistic***, check out the definition on p. 404 of *AoS*).
 #
 # What assumption about the variances of the two groups are we making here?
+# %% codecell
+
 # %% markdown
 # __A:__
+
+# null: "The patients with insurance are charged nearly the same amount as those with insurance."
+
+# alternative: "Patients with insurance are charged a different amount than those without insurance. "
+
+# Given the analysis above and the P-Value of 4.461230231620717e-31%, we can safely reject the null hypothesis.
+
+# This finding concludes that patients with insurance are charged more on average than patients without.
 # %% markdown
 # __Q5:__ Perform this hypothesis test both manually, using the above formulae, and then using the appropriate function from [scipy.stats](https://docs.scipy.org/doc/scipy/reference/stats.html#statistical-tests) (hint, you're looking for a function to perform a _t_-test on two independent samples). For the manual approach, calculate the value of the test statistic and then its probability (the p-value). Verify you get the same results from both.
-# %% markdown
 # __A:__
+# %% markdown
 # %% codecell
+medical['insuranceclaim']
+charges_with_insurance = medical[medical['insuranceclaim'] == True]['charges']
+charges_without_insurance = medical[medical['insuranceclaim'] == False]['charges']
+print(scipy.stats.ttest_ind(charges_with_insurance, charges_without_insurance))
 
+plt.plot(sorted(charges_with_insurance), color='blue', label='With Insurance')
+plt.plot(sorted(charges_without_insurance), color='orange', label='Without Insurance')
+plt.title('Distribution of charges (with vs without insurance)')
+plt.xlabel('Number of observations')
+plt.ylabel('Charge Amount')
+#plt.axvline(175, color='purple')
+plt.legend()
+plt.show()
+print('with\n' + str(charges_with_insurance.describe()))
+print('without\n' + str(charges_without_insurance.describe()))
 # %% codecell
+ # s_p = \sqrt{\frac{(n_0 - 1)s^2_0 + (n_1 - 1)s^2_1}{n_0 + n_1 - 2}}
+ # t = \frac{\bar{x}_0 - \bar{x}_1}{s_p \sqrt{1/n_0 + 1/n_1}}.
+def t_test(data1, data2):
+# calculate means
+    mean1, mean2 = np.mean(data1), np.mean(data2)
+# calculate sample standard deviations
+    std1, std2 = np.std(data1, ddof=1), np.std(data2, ddof=1)
+# calculate standard errors
+    n1, n2 = len(data1), len(data2)
+    se1, se2 = std1/np.sqrt(n1), std2/np.sqrt(n2)
 
-# %% codecell
+# standard error on the difference between the samples
+    sed = np.sqrt(se1**2.0 + se2**2.0)
 
-# %% codecell
+
+#  calculate the t statistic
+    t_stat = (mean1 - mean2) / sed
+
+
+    # calculate the p-value
+
+    return t_stat
+
+t_test(charges_with_insurance, charges_without_insurance)
+
+
 
 # %% markdown
 # Congratulations! Hopefully you got the exact same numerical results. This shows that you correctly calculated the numbers by hand. Secondly, you used the correct function and saw that it's much easier to use. All you need to do is pass your data to it.
 # %% markdown
 # __Q6:__ Conceptual question: look through the documentation for statistical test functions in scipy.stats. You'll see the above _t_-test for a sample, but can you see an equivalent one for performing a *z*-test from a sample? Comment on your answer.
 # %% markdown
-# __A:__
+# __A:__ The equivalent function in scipy the percent point function or PPF. If we input the mean, this will return the critical value or the Z - score. From this formula we can input the confidence interval. 
 # %% markdown
 # ## Learning outcomes
 # %% markdown

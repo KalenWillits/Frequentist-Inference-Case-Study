@@ -241,7 +241,7 @@ plt.legend()
 # %% markdown
 # __Q10:__ Repeat the above year's worth of samples but for a sample size of 50 (perhaps you had a bigger budget for conducting surveys that year)! Would you expect your distribution of sample means to be wider (more variable) or narrower (more consistent)? Compare your resultant summary statistics to those predicted by the CLT.
 # %% markdown
-# __A:__ See plot below. The P-Value for 177 or lower is 0.003059444665678314.
+# __A:__  This made the distrobution wider as per the central limit thereom.
 # %% codecell
 seed(47)
 
@@ -259,7 +259,7 @@ plt.title('Mean Town Heights (SAMPLE SIZE 50)')
 plt.legend()
 
 norm.ppf(0.95, 177, 1)
-print('The P value for an occurence of 177 cm is ' + str((max(norm.cdf(samples50, 177, 1)))))
+print('The P value for an occurence of 177 cm is ' + str((max(norm(samples50).cdf(177)))))
 
 # %% markdown
 # What we've seen so far, then, is that we can estimate population parameters from a sample from the population, and that samples have their own distributions. Furthermore, the larger the sample size, the narrower are those sampling distributions.
